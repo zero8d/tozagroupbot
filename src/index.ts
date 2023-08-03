@@ -2,8 +2,9 @@ import { ISession, MongoDBAdapter } from '@grammyjs/storage-mongodb'
 import { Bot, Context, InlineKeyboard, session, SessionFlavor } from 'grammy'
 import mongoose from 'mongoose'
 import dotenv from 'dotenv'
-import { botToken, mongoConnString } from './config'
 dotenv.config()
+import { botToken, mongoConnString } from './config'
+import { router } from './router'
 
 interface SessionData {
   first_name?: string
@@ -42,10 +43,11 @@ const main = async () => {
       reply_markup: inlineKeyboard,
     })
   })
-
+  bot.use(router)
+  bot.catch(err => console.error(err))
   bot.start({
     onStart: () =>
-      console.log('@' + bot.botInfo.username + ' has been started'),
+      console.log('https://t.me/' + bot.botInfo.username + ' has been started'),
   })
 }
 

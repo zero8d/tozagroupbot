@@ -31,10 +31,24 @@ group.use(async (ctx, next) => {
   const admin = group.admins.find(
     admin => ctx.message?.from.id === admin.user.id
   )
-  if (!admin) {
+  if (admin) {
     return
   }
   next()
+})
+group.on(':new_chat_members', async ctx => {
+  try {
+    await ctx.deleteMessage()
+  } catch (error) {
+    console.error(error)
+  }
+})
+group.on('msg:left_chat_member', async ctx => {
+  try {
+    await ctx.deleteMessage()
+  } catch (error) {
+    console.error(error)
+  }
 })
 group.on('chat_member', async ctx => {
   if (ctx.chatMember.new_chat_member.status === 'administrator') {
@@ -63,7 +77,15 @@ group.on('chat_member', async ctx => {
       }
     )
   }
+  if (ctx.chatMember.new_chat_member.status === 'member') {
+    try {
+      await ctx.deleteMessage()
+    } catch (error) {
+      console.error(error)
+    }
+  }
 })
+
 group.on('msg:forward_date', ctx => {
   ctx.deleteMessage()
 })
@@ -72,4 +94,8 @@ group.on('::url', ctx => {
 })
 group.on([':entities:url', ':entities:text_link'], ctx => {
   ctx.deleteMessage()
+})
+group.on('msg:text', ctx => {
+  console.log(ctx.message?.text)
+  ctx.reply('Got message')
 })

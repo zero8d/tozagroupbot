@@ -4,7 +4,7 @@ import Group from '../models/Group'
 import { group } from './group'
 import { privateChat } from './private'
 
-const router = new Router<MyContext>(ctx => ctx.chat?.type)
+export const router = new Router<MyContext>(ctx => ctx.chat?.type)
 
 router.route('group', group)
 router.route('supergroup', group)
