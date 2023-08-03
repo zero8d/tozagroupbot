@@ -9,10 +9,23 @@ group.on('my_chat_member:from', async ctx => {
   if (ctx.myChatMember.new_chat_member.status === 'administrator') {
     admins = await ctx.getChatAdministrators()
   }
+  if (!ctx.chat?.id) {
+    return
+  }
+  const chat: any = await ctx.api.getChat(ctx.chat.id)
+  let inviteLink
+  try {
+    inviteLink = (await ctx.createChatInviteLink()).invite_link
+  } catch (error) {
+    console.error(error)
+  }
   await Group.updateOne(
     { id: ctx.chat.id },
     {
       id: ctx.chat.id,
+      name: chat.title,
+      username: chat.username,
+      link: inviteLink,
       admins,
       myStatus: ctx.myChatMember.new_chat_member.status,
     },
