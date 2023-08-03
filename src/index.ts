@@ -30,6 +30,7 @@ const main = async () => {
       "Guruhga qo'shing",
       'https://t.me/' + ctx.me.username + '?startgroup=true'
     )
+    ctx.session.chattype = ctx.session.chattype
     if (ctx.chat.type !== 'private') {
       ctx.reply(
         "Men guruhlarni tozalayman. To'gri ishlashim uchun meni admin qiling",
@@ -39,6 +40,8 @@ const main = async () => {
       )
       return
     }
+    ctx.session.first_name = ctx.message?.from.first_name
+    ctx.session.username = ctx.message?.from.username
     ctx.reply('Bu bot guruhlarni har xil reklamalardan tozalaydi.', {
       reply_markup: inlineKeyboard,
     })
