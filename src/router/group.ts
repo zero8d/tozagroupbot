@@ -12,7 +12,16 @@ group.on('my_chat_member:from', async ctx => {
   if (!ctx.chat?.id) {
     return
   }
-  const chat: any = await ctx.api.getChat(ctx.chat.id)
+  const chatResult = await ctx.api.getChat(ctx.chat.id)
+  let username
+  let name
+  if (chatResult.type === 'supergroup') {
+    username = chatResult.username
+    name = chatResult.title
+  }
+  if (chatResult.type === 'group') {
+    name = chatResult.title
+  }
   let inviteLink
   try {
     inviteLink = (await ctx.createChatInviteLink()).invite_link
@@ -23,8 +32,8 @@ group.on('my_chat_member:from', async ctx => {
     { id: ctx.chat.id },
     {
       id: ctx.chat.id,
-      name: chat.title,
-      username: chat.username,
+      name,
+      username,
       link: inviteLink,
       admins,
       myStatus: ctx.myChatMember.new_chat_member.status,
